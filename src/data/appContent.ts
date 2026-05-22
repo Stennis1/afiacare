@@ -23,10 +23,10 @@ export const clinicImageUrl = '/images/ghana-nurse-pregnant-care.png';
 export const ussdCareImageUrl = '/images/ghana-nurse-pregnant-care.png';
 
 export const riskColors: Record<'Low' | 'Medium' | 'High' | 'Emergency', string> = {
-  Low: 'bg-emerald-500 text-emerald-900',
-  Medium: 'bg-amber-300 text-amber-900',
-  High: 'bg-red-500 text-white',
-  Emergency: 'bg-slate-950 text-white',
+  Low: 'bg-emerald-100 text-emerald-800',
+  Medium: 'bg-amber-100 text-amber-800',
+  High: 'bg-red-100 text-red-800',
+  Emergency: 'bg-afia-navy text-white',
 };
 
 export const speechLanguageCodes: Record<Language, string> = {

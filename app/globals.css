@@ -9,11 +9,21 @@ html {
 body {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, rgba(14, 165, 233, 0.14), transparent 30%),
-    radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.12), transparent 25%),
-    #020617;
+  background: #ffffff;
+  color: #03045e;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Smooth page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms ease, transform 200ms ease;
 }

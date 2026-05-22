@@ -395,85 +395,72 @@ function App() {
     void speakPatientAdvice(riskResult.patientMessage, riskResult.level);
   };
 
-  const pageTitle = {
-    landing: 'Welcome to AfiaCare',
-    ussd: 'USSD Simulator',
-    chw: 'CHW Priority Dashboard',
-    district: 'District Health Metrics',
-  }[page];
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-afia-navy via-slate-900 to-slate-950 text-slate-100">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <AppHeader
-          page={page}
-          aiMode={aiMode}
-          hasServerAI={hasServerAI}
-          onChangePage={setPage}
-          onSelectDemoMode={() => setAiMode('demo')}
-          onSelectLiveMode={() => {
-            if (!hasServerAI) {
-              setApiKeyError('Live AI Mode requires a server-side integration and NEXT_PUBLIC_ENABLE_SERVER_AI=true.');
-              return;
+    <div className="min-h-screen bg-white text-afia-navy">
+      <AppHeader
+        page={page}
+        aiMode={aiMode}
+        hasServerAI={hasServerAI}
+        onChangePage={setPage}
+        onSelectDemoMode={() => setAiMode('demo')}
+        onSelectLiveMode={() => {
+          if (!hasServerAI) {
+            setApiKeyError('Live AI Mode requires a server-side integration and NEXT_PUBLIC_ENABLE_SERVER_AI=true.');
+            return;
+          }
+          setAiMode('live');
+          setApiKeyError(null);
+        }}
+      />
+
+      <main>
+        {page === 'landing' && (
+          <LandingPage
+            onStartVoiceDemo={() => setPage('ussd')}
+            onViewDashboard={() => setPage('chw')}
+          />
+        )}
+
+        {page === 'ussd' && (
+          <UssdPage
+            language={language}
+            symptoms={symptoms}
+            speechStatus={speechStatus}
+            apiKeyError={apiKeyError}
+            listening={listening}
+            loading={loading}
+            riskResult={riskResult}
+            phrases={localLanguagePhrases[language]}
+            onSelectLanguage={handleLanguageSelect}
+            onStartSpeechInput={() => void startSpeechInput()}
+            onSymptomsChange={setSymptoms}
+            onUsePhrase={(phrase) => void useLocalDemoPhrase(phrase)}
+            onEvaluate={() => void handleEvaluate()}
+            onSpeakPatientMessage={speakPatientMessage}
+          />
+        )}
+
+        {page === 'chw' && (
+          <ChwDashboard
+            orderedPatients={orderedPatients}
+            userRecordCount={userRecords.length}
+            referralNote={referralNote}
+            onGenerateReferral={(patient) =>
+              setReferralNote(
+                `Referral for ${patient.name}: prioritise clinic appointment within 24 hours due to ${patient.reason.toLowerCase()}. Contact CHW team and arrange transport.`,
+              )
             }
-            setAiMode('live');
-            setApiKeyError(null);
-          }}
-        />
+          />
+        )}
 
-        <section className="space-y-6">
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-slate-950/30">
-            <h2 className="text-2xl font-semibold text-white">{pageTitle}</h2>
-          </div>
-
-          {page === 'landing' && (
-            <LandingPage
-              onStartVoiceDemo={() => setPage('ussd')}
-              onViewDashboard={() => setPage('chw')}
-            />
-          )}
-
-          {page === 'ussd' && (
-            <UssdPage
-              language={language}
-              symptoms={symptoms}
-              speechStatus={speechStatus}
-              apiKeyError={apiKeyError}
-              listening={listening}
-              loading={loading}
-              riskResult={riskResult}
-              phrases={localLanguagePhrases[language]}
-              onSelectLanguage={handleLanguageSelect}
-              onStartSpeechInput={() => void startSpeechInput()}
-              onSymptomsChange={setSymptoms}
-              onUsePhrase={(phrase) => void useLocalDemoPhrase(phrase)}
-              onEvaluate={() => void handleEvaluate()}
-              onSpeakPatientMessage={speakPatientMessage}
-            />
-          )}
-
-          {page === 'chw' && (
-            <ChwDashboard
-              orderedPatients={orderedPatients}
-              userRecordCount={userRecords.length}
-              referralNote={referralNote}
-              onGenerateReferral={(patient) =>
-                setReferralNote(
-                  `Referral for ${patient.name}: prioritise clinic appointment within 24 hours due to ${patient.reason.toLowerCase()}. Contact CHW team and arrange transport.`,
-                )
-              }
-            />
-          )}
-
-          {page === 'district' && (
-            <DistrictMetrics
-              totalHighRisk={totalHighRisk}
-              referralsSent={referralsSent}
-              ancFollowUp={ancFollowUp}
-            />
-          )}
-        </section>
-      </div>
+        {page === 'district' && (
+          <DistrictMetrics
+            totalHighRisk={totalHighRisk}
+            referralsSent={referralsSent}
+            ancFollowUp={ancFollowUp}
+          />
+        )}
+      </main>
     </div>
   );
 }
